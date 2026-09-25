@@ -1,0 +1,56 @@
+Spring Security
+
+    When you add spring security dependency to your application, by default these are the major things that happens 
+
+    1. All endpoints requires authentication 
+    2. Provides form based login and http basic to authenticate
+    3. a default inmemory user with a generated password in the console.
+
+    But what if you want to provide auth to many users by user. 
+    
+    First you have a sign up endpoint 
+        this endpoints should 
+            1. Not require authentication
+            2. Require atleast username and password, hash password and store your info in your db
+
+        how?
+            - create a security filter to allow the sign up endpoint not require auth
+            - create an entity to store user info like a user entity but also note that it is important to implement 
+            userdetails 
+            why 
+                it make it easier for spring security to identity the class it should work with for authentication
+                related stuff
+
+            - recieve user credentials from the signup endpoint and make sure to hash the password with a password 
+                encoder like bcrypt.
+
+    Secondly authentication
+        By default user can send their credentials in form based login or http basic 
+        since building a backend that sends data also and not html i will start with 
+        http basic 
+
+        how it works if 
+        client with at the user credentials eg their email and password in the request header
+
+        we get the credentials (email and password)
+            find the user in our db with that email 
+            encode the credentials password and check if it a match 
+            now we are satisfied that the user is a valid user. 
+
+
+        authentication manager does that for us
+            it looks for a service that implements the interface userDetailService
+            calls the loadUserByUsername method with the username with returns a userDetail
+            matches the passwords between what is sent and the userDetails 
+            
+
+
+
+
+    
+
+
+    
+
+
+
