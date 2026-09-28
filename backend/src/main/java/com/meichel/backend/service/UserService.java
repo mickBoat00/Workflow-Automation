@@ -1,15 +1,14 @@
 package com.meichel.backend.service;
 
-import java.util.List;
-
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.meichel.backend.dto.UserDto;
+import com.meichel.backend.dto.request.SignUpRequest;
+import com.meichel.backend.dto.response.TokenResponse;
 import com.meichel.backend.entity.User;
-import com.meichel.backend.repo.UserRepository;
+import com.meichel.backend.exception.DuplicateUserEmailException;
+import com.meichel.backend.repository.UserRepository;
+import com.meichel.backend.utils.JwtUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,22 +18,25 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtils jwtUtils;
 
-    public List<User> allUsers(){
-        return userRepository.findAll();
-    }
+    public TokenResponse createUser(SignUpRequest signUpRequest) {
 
-    public UserDetails signUpUser(UserDto userDto) {
+        if(userRepository.existsByEmail(signUpRequest.email())) {
+            throw new DuplicateUserEmailException("Email already exist.");
+        }
 
-        User user = User.builder()
-            .fullName(userDto.fullName())
-            .email(userDto.email())
-            .password(passwordEncoder.encode(userDto.password()))
-            .planSlug("free")
-            .build();
+        User user = User
+        .builder()
+        .fullName(signUpRequest.fullName())
+        .email(signUpRequest.email())
+        .password(passwordEncoder.encode(signUpRequest.password()))
+        .planSlug("free")
+        .build();
 
-
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        String token = jwtUtils.generateToken(savedUser);
+        return new TokenResponse(token);
     }
     
 }

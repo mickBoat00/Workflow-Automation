@@ -1,3 +1,34 @@
+Note i want to implement a sign up and sign in mechanism in my application 
+
+Normal flow of signup 
+    User sends their email and password and other fields
+        Server validates (the fields should follow and expected format)
+        hashes the password and stores the user info in the db
+
+    How does signing up a user work in spring boot
+        By default spring requires authenticate to all endpoint.
+        Create a security filter chain to allow the signup endpoint
+
+        Controller recieve a request body with the user info.
+        the request body is validated to have the expected structure
+        saved into the db entity.
+        password is hashed and stored into db
+        User entity implements a UserDetails interface. reason ?
+        the reason comes when signin up user. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Spring Security
 
     When you add spring security dependency to your application, by default these are the major things that happens 
@@ -42,13 +73,13 @@ Spring Security
             it looks for a service that implements the interface userDetailService
             calls the loadUserByUsername method with the username with returns a userDetail
             matches the passwords between what is sent and the userDetails 
-            
+
 
 
 
 
     
-
+https://medium.com/@minadev/authentication-and-authorization-with-spring-security-bf22e985f2cb
 
     
 

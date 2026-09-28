@@ -20,14 +20,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity 
-@Table(name="users")
+@Table(name = "Users")
 @Data
-@Builder
-@AllArgsConstructor 
 @NoArgsConstructor 
+@AllArgsConstructor 
+@Builder 
 public class User implements UserDetails {
+    
     @Id 
-    @GeneratedValue (strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
     private String fullName;
@@ -40,14 +41,11 @@ public class User implements UserDetails {
     @UpdateTimestamp 
     private LocalDateTime updatedAt;
 
-    @Override 
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
-
-    @Override 
     public String getUsername() {
         return email;
     }
 
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
 }
