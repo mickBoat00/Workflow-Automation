@@ -1,8 +1,12 @@
 package com.meichel.backend.service;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.meichel.backend.dto.request.LoginRequest;
 import com.meichel.backend.dto.request.SignUpRequest;
 import com.meichel.backend.dto.response.TokenResponse;
 import com.meichel.backend.entity.User;
@@ -19,6 +23,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
+    private final AuthenticationManager authenticationManager;
 
     public TokenResponse createUser(SignUpRequest signUpRequest) {
 
@@ -37,6 +42,19 @@ public class UserService {
         User savedUser = userRepository.save(user);
         String token = jwtUtils.generateToken(savedUser);
         return new TokenResponse(token);
+    }
+
+
+    public TokenResponse loginUser(LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken.unauthenticated(
+                    loginRequest.email(),
+                    loginRequest.password()
+                )
+            );
+
+        User user = (User) authentication.getPrincipal();
+        return new TokenResponse(jwtUtils.generateToken(user));
     }
     
 }
